@@ -11,11 +11,47 @@
             overflow: hidden;
             display: block;
         }
-            </style>
-        <title>TOKUM</title>
+        #cnv {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        #signature {
+            position: absolute;
+            bottom: 10px;
+            right: 30px;
+            font-size: 15px;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+        #jumpButton {
+            position: absolute;
+            left: 10px;
+            bottom: 40px;            
+        }
+        #playPauseButton {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+        }
+        #controlPanel {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            width: 15%;
+            height: 40%;
+            opacity: 0;
+        }
+        </style>
+        <title>Circles</title>
     </head>
     <body>
-        <canvas id="cnv" style='position:absolute; left:0px; top:0px;'></canvas>
+        <canvas id="cnv"></canvas>
         <script src="circles.js"></script>
+        <span id="signature">sabulous</span>
+        <div id="controlPanel" onmouseover="showPanel(this)" onmouseout="hidePanel(this)">
+            <button id="jumpButton" onclick="jump()">Jump</button>
+            <button id="playPauseButton" onclick="playPause()">Pause</button>
+        </div>
     </body>
 </html>

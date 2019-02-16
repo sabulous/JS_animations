@@ -1,9 +1,10 @@
 var canvas = document.getElementById('cnv');
 var ctx = canvas.getContext('2d');
 
-var x = 2560 / 2;
-var y = 1440 / 2;
+var x = canvas.width / 2;
+var y = canvas.height / 2;
 
+var isPlaying = true;
 var red = 0;
 var green = 0;
 var blue = 0;
@@ -16,8 +17,6 @@ var direction = true;
 
 var frame = 0;
 
-initialize();
-
 function initialize() {
     window.addEventListener('resize', resizeCanvas, false);
     resizeCanvas();
@@ -27,6 +26,12 @@ function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
+
+function playPause() {
+    isPlaying = !isPlaying;
+    document.getElementById("playPauseButton").innerHTML = isPlaying ? "Pause" : "Play";
+}
+
 function drawArc() {
     ctx.beginPath();
     ctx.arc(x, y, r, angle * 0.67, angle, direction);
@@ -47,21 +52,11 @@ function setColor() {
     ctx.strokeStyle = 'rgb('+ red + ',' + green + ',' + blue +')';
 }
 
-function resetCenter() {
-    x = Math.random() * canvas.getAttribute("width");
-    y = Math.random() * canvas.getAttribute("height"); 
-}
-
 function setRadius() {
-    if(frame % 200 == 0) {
+    if(frame % 10 != 0) {
         r = r + Math.ceil(Math.random() * 10);
     } else {
-        r = r - Math.ceil(Math.random() * 10);
-    }
-
-    if(r > canvas.getAttribute("height") && r > canvas.getAttribute("width")) {
-        r = 1;
-        resetCenter();
+        r = Math.abs(r - Math.ceil(Math.random() * 10));
     }
 }
 
@@ -76,13 +71,57 @@ function setDirection() {
     else direction = true;
 }
 
+function setCenter() {
+    x = Math.random() * canvas.getAttribute("width");
+    y = Math.random() * canvas.getAttribute("height"); 
+}
+
+function initRadius() {
+    r = 1;
+}
+
+function ensureBoundaries() {
+    if(r > canvas.getAttribute("height") && r > canvas.getAttribute("width")) {
+        initRadius();
+        setCenter();
+    }
+}
+
+function showPanel(panel) {
+    panel.style.opacity = 1;
+}
+
+function hidePanel(panel) {
+    panel.style.opacity = 0;
+}
+
+function jump() {
+    setCenter();
+    initRadius();
+}
+
+function keyPressed(e) {
+    var charCode = (typeof e.which == "number") ? e.which : e.keyCode
+    
+    // if p pressed
+    if(charCode == 80 || charCode == 112) playPause();
+    
+    // if j pressed
+    if(charCode == 74 || charCode == 106) jump();
+}
+
 function draw() {
-    //ctx.clearRect(0, 0, canvas.getAttribute("width"), canvas.getAttribute("height"));
-    drawArc();  
-    if(frame % 100 == 0) setRadius();
-    if(frame % 70 == 0) setAngle();
-    if(frame % 80 == 0) changeDirection();
+    if(!isPlaying) return;
+    drawArc();
+    
+    if(frame % 2 == 0) setRadius();
+    ensureBoundaries();
+
+    if(frame % 3 == 0) setAngle();
+    if(frame % 10 == 0) setDirection();
     frame++;
 }
 
-setInterval(draw, 20);
+initialize();
+document.onkeypress = keyPressed;
+setInterval(draw, 10);
