@@ -16,6 +16,17 @@ var direction = true;
 
 var frame = 0;
 
+initialize();
+
+function initialize() {
+    window.addEventListener('resize', resizeCanvas, false);
+    resizeCanvas();
+}
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 function drawArc() {
     ctx.beginPath();
     ctx.arc(x, y, r, angle * 0.67, angle, direction);
